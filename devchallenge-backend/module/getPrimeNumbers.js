@@ -1,5 +1,3 @@
- 
-
 const express = require('express')
 
  // Returns an array of prime number 

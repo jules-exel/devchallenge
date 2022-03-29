@@ -8,7 +8,7 @@ const useForm = (callback, validate) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [responseData, setResponse] = useState()
-  const baseUrl = "http://localhost:8080/"
+  const baseUrl = "http://localhost:8080/api/"
 
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmitting) {
