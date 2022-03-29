@@ -1,76 +1,61 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const cors = require("cors");
+const { json } = require('express');
+const e = require('express');
+const prime = require('./module/getPrimeNumbers') 
 
-app.get('/', (req, res) => {
-  // TODO: replace limit with the upper limit number in front end form
-  var limit = 40
+app.options("*", cors({ origin: 'http://localhost:3000', optionsSuccessStatus: 200 }));
+app.use(cors({ origin: "http://localhost:3000", optionsSuccessStatus: 200 }));
 
-  let primeArr = []
-  let medianArr = []
+const port = 8080;
 
-  // Get our prime numbers first in an array
-  primeArr = getPrimeNumbers(limit)
-  
-  //console.log(primeArr)
-  
-  // Next, figure out the median number of the prime number array
-  medianArr = getMedian(primeArr) 
-  
-  //console.log(medianArr)
-  
-  return res.json(medianArr)
-})
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Returns an array of prime number 
-// Param: number - the upper limit number to check against
-function getPrimeNumbers(value) 
-{ 
-    // We don't need to include the upper limit number, so this range func is fine as it starts at 0
-    // and we will be skipping over it anyway
-    var primeArrTmp = [...Array(value).keys()]; 
-    var primeArr = []
- 
-    // start at two, since 1 is not a prime number, two always is as its divisible by itself or a positive number
-    for(var i = 2; i < value ; i++) {
-        primeArrTmp[i] = true;
-    } 
 
-    // get the square root value, since now the prime numbers are will less than or equal to the square root
-    // set true or false if it is a prime number
-    var sqrt = Math.sqrt(value);
-   
-    for(var i = 2; i < sqrt; i++) {
-        if(primeArrTmp[i] === true) {
-            for(var j = i * i; j < value; j += i) {
-                primeArrTmp[j] = false;
-            }
-        }
-    }
-    // finally check which ones are prime numbers and add to array to return
-    for(var i = 2; i < value; i++) {
-        if(primeArrTmp[i] === true) {
-            primeArr.push(i)
-        }
-    }
-    return primeArr
-}
+// POST 
+// Returns median of prime number array where 
+// variable req.body.limit is the upper limit of prime numbers
+app.post('/', (req, res) => {
 
-// Returns an array of median number(s)
-// Param: primeArr - The array of prime numbers 
-function getMedian(primeArr) {
-    // Sort the array into ascending numerical order
-    const sortedArr = primeArr.sort((a, b) => a - b)
+var data = ''
+var status = false
 
-    // If the array has an even number, return the two median numbers,
-    // otherwise return the one median number
-    if (sortedArr.length % 2 === 0) {
-        medianArr.push(sortedArr[sortedArr.length / 2 - 1])
-        medianArr.push(sortedArr[sortedArr.length / 2])
+let primeArr = []
+let medianArr = []
+
+
+ if (req.body.limit !== null)
+ {  
+  var limit = parseInt(req.body.limit)
+  if (!isNaN(limit)) {
+      if (limit <= 1)
+      {
+        data = "Error: the number entered must be greater than one." 
+      }
+      else {
+        // Get our prime numbers first in an array
+        medianArr = prime(limit) 
+
+        // return data
+        data = "The median number of the prime number array is " + medianArr.toString()
+        status = true
+      }
     }
     else {
-        medianArr.push(sortedArr[Math.floor(sortedArr.length / 2)])
-    } 
-}
+        data = "Error: the data entered is not a valid number."
+    }
+ }
+ else
+ {
+    data = "Error: no number was entered."
+ }
+
+  
+ return res.json({data: data, status: status, statusCode: res.statusCode}) 
+})
+
+
 
 app.listen(port, () => console.log('Sample app listening on port ${port}!'))

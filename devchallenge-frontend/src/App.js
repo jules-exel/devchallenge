@@ -1,28 +1,14 @@
-import React, { useState } from "react";
-import './App.css';
+import React from 'react';
+import Form from './Form';
 
 const App = () => {
-  const [limit, setLimit] = useState('')
-
   return (
-    <div id='main'>
-      <h2>Developer Challenge</h2>
-      <p>By <a href="https://linkedin.com/in/julie-exel">Julie Exel</a></p>
-      <br />
-
-      <div class='container'>
-        <label 
-          for={limit} 
-          type='input' 
-          text='Enter a numberical value'></label>
-        <input 
-          type='text'
-          onChange={(e) => setLimit(e.target.value)} 
-          value={limit} 
-          name={limit} />
+    <div id="main" className="p3">
+      <div className="container p3">
+        <Form />
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default App;
